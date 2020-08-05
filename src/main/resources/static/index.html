@@ -1,0 +1,254 @@
+<html>
+<style>
+    body{
+        background: #353f42;
+    }
+
+    *{
+        padding: 0;
+        margin: 0;
+    }
+
+    .main {
+        margin: 0 auto;
+        padding-left: 25px;
+        padding-right: 25px;
+        padding-top: 15px;
+        width: 350px;
+        height: 350px;
+        background: #FFFFFF;
+        /*以下css用于让登录表单垂直居中在界面,可删除*/
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -175px;
+        margin-left: -175px;
+    }
+
+    .title {
+        width: 100%;
+        height: 40px;
+        line-height: 40px;
+    }
+
+    .title span {
+        font-size: 18px;
+        color: #353f42;
+    }
+
+    .title-msg {
+        width: 100%;
+        height: 64px;
+        line-height: 64px;
+    }
+
+    .title:hover{
+        cursor: default	;
+    }
+
+    .title-msg:hover{
+        cursor: default	;
+    }
+
+    .title-msg span {
+        font-size: 12px;
+        color: #707472;
+    }
+
+    .input-content {
+        width: 100%;
+        height: 120px;
+    }
+
+    .input-content input {
+        width: 330px;
+        height: 40px;
+        border: 1px solid #dad9d6;
+        background: #ffffff;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .enter-btn {
+        width: 350px;
+        height: 40px;
+        color: #fff;
+        background: #0bc5de;
+        line-height: 40px;
+        text-align: center;
+        border: 0px;
+    }
+
+    .foor{
+        width: 100%;
+        height: auto;
+        color: #9b9c98;
+        font-size: 12px;
+        margin-top: 20px;
+    }
+
+    .enter-btn:hover {
+        cursor:pointer;
+        background: #1db5c9;
+    }
+
+    .foor div:hover {
+        cursor:pointer;
+        color: #484847;
+        font-weight: 600;
+    }
+
+    .left{
+        float: left;
+    }
+    .right{
+        float: right;
+    }
+
+</style>
+<body>
+<div class="main">
+    <div class="title">
+        <span>密码登录</span>
+    </div>
+
+    <div class="title-msg">
+        <span>请输入登陆账号和密码</span>
+    </div>
+
+    <form action="/contextToData/downJar"  method="post" enctype="multipart/form-data"  id="form_parameters" >
+        <p><input type="file" id="file" name="file"></p>
+        <input type="hidden" id="tag" name="tag" value="card">
+        <input type="hidden" id="filePath" name="filePath" value="D:\\abcde\\亦庄笔记.txt">
+        <input type="hidden" id="fileName" name="fileName" value="亦庄笔记.txt">
+        <p><input type="submit" value="submit..."></p>
+        <p>----------------------</p>
+        <p><a href="D:\\abcde\\亦庄笔记.txt">下载</a></p>
+        <p><input type="button" value="下载列表" onclick="getErrorFile()"></p>
+        <p><input type="button" value="删除" onclick="delFile()">&nbsp;<input type="button" value="删除全部" onclick="delFileAll()"></p>
+        <p>-----</p>
+        <p><input type="button" value="下载" onclick="down()"></p>
+        <p><a  value="下载2" href="/contextToData/downJar">下载111</a> </p>
+    </form>
+
+
+
+</div>
+</body>
+<script src="js/jquery-3.4.1.min.js"></script>
+<script>
+    // $(function(){
+    //     if(window.location.href == window.location.origin +"/login.html?username=admin&password=123456"){
+    //         window.location.href = window.location.origin+'/swagger-ui.html';
+    //     }
+    // });
+    function getErrorFile() {
+            var result = $('#form_parameters').serializeArray();
+            var resultJSON = {};
+            resultJSON["tag"] =  "card";
+            // for (var i = 0;i<result.length;i++){
+            //     resultJSON[result[i].name] = result[i].value;
+            // }
+            $.ajax({
+                    type: "POST",                  //提交方式
+                    dataType: "json",              //预期服务器返回的数据类型
+                    url: "/contextToData/getErrorFile" ,          //目标url
+                    data: "tag=card", //提交的数据
+                    async: false,
+                    success: function (result) {
+                        var msg = "";
+                        for (var key in result.obj) {
+                            msg += result.obj[key];
+                            msg += "&nbsp;\n";
+                        }
+                        alert(msg);
+                    },
+                    error : function () {
+                        alert("异常！");
+                    }
+                }
+            )
+    };
+    function delFile() {
+        var result = $('#form_parameters').serializeArray();
+        var param = {};
+        // resultJSON["path"] =  "D:\\abcde\\RSP\\1\\aaa200608171741.xls";
+        for (var i = 0;i<result.length;i++){
+            param[result[i].name] = result[i].value;
+        }
+        $.ajax({
+                type: "POST",                  //提交方式
+                dataType: "json",              //预期服务器返回的数据类型
+                url: "/contextToData/delErrorFile" ,          //目标url
+                data: "path=D:\\abcde\\RSP\\card\\1\\aaa200609132656.xls", //提交的数据
+                async: false,
+                success: function (result) {
+                    var msg = "";
+                    for (var key in result.obj) {
+                        msg += result.obj[key];
+                        msg += "\n";
+                    }
+                    alert(msg);
+                },
+                error : function () {
+                    alert("异常！");
+                }
+            }
+        )
+    };
+    function delFileAll() {
+            var result = $('#form_parameters').serializeArray();
+            var resultJSON = {};
+            for (var i = 0;i<result.length;i++){
+                resultJSON[result[i].name] = result[i].value;
+            }
+            $.ajax({
+                    type: "POST",                  //提交方式
+                    dataType: "json",              //预期服务器返回的数据类型
+                    url: "/contextToData/delErrorFileAll?tag=card" ,          //目标url
+                    // data: resultJSON, //提交的数据
+                    async: false,
+                    success: function (result) {
+                        var msg = "";
+                        for (var key in result.obj) {
+                            msg += result.obj[key];
+                            msg += "\n";
+                        }
+                        alert(msg);
+                    },
+                    error : function () {
+                        alert("异常！");
+                    }
+                }
+            )
+    };
+    function down() {
+        var result = $('#form_parameters').serializeArray();
+        var resultJSON = {};
+        resultJSON["filePath"] =  "D:\\abcde\\亦庄笔记.txt";
+        resultJSON["fileName"] =  "亦庄笔记.txt";
+        // for (var i = 0;i<result.length;i++){
+        //     resultJSON[result[i].name] = result[i].value;
+        // }
+        $.ajax({
+                type: "GET",                  //提交方式
+                dataType: "json",              //预期服务器返回的数据类型
+                url: "/contextToData/down" ,          //目标url
+                data: resultJSON, //提交的数据
+                async: false,
+                success: function (result) {
+                    var msg = "";
+                    for (var key in result.obj) {
+                        msg += result.obj[key];
+                        msg += "\n";
+                    }
+                    alert(msg);
+                },
+                error : function () {
+                    alert("异常！");
+                }
+            }
+        )
+    };
+</script>
+</html>

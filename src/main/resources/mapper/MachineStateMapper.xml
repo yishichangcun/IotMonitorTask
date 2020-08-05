@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.asiainfo.iot.mapper.MachineStateMapper" >
+
+	<select id="queryMonitorTaskList" resultType="java.util.HashMap" >
+		select ip,rule_ids,user_id from ts_monitor_task
+		 where user_id ='admin'
+		 group by ip
+	</select>
+
+	<select id="queryMachineStateList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select s.* from ts_machine_state s
+		WHERE s.address = #{param.ip, jdbcType=VARCHAR}
+		order by s.time desc
+		LIMIT 0,1
+	</select>
+
+</mapper>

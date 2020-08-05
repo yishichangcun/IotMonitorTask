@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.asiainfo.iot.mapper.MonitorUserMapper" >
+
+	<select id="queryMonitotListPN" resultType="Integer" parameterType="java.util.HashMap">
+		select count(id) from ts_monitor_output
+		where
+			status = #{param.status, jdbcType=VARCHAR}
+		<if test="param.id != null" >
+			and id = #{param.id, jdbcType=NUMERIC}
+		</if>
+		<if test="param.ip != null" >
+			and ip = #{param.ip, jdbcType=VARCHAR}
+		</if>
+		<if test="param.user_id != null" >
+			and user_id = #{param.user_id, jdbcType=VARCHAR}
+		</if>
+		<if test="param.rule_id != null" >
+			and rule_id = #{param.rule_id, jdbcType=NUMERIC}
+		</if>
+		<if test="param.level != null" >
+			and level = #{param.level, jdbcType=NUMERIC}
+		</if>
+	</select>
+	<select id="queryMonitotList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select mu.phone, mu.email, mo.*
+		from ts_monitor_output mo left join ts_monitor_user mu on mo.user_id = mu.name
+		where
+			mo.status = #{param.status, jdbcType=VARCHAR}
+		<if test="param.id != null" >
+			and mo.id = #{param.id, jdbcType=NUMERIC}
+		</if>
+		<if test="param.ip != null" >
+			and mo.ip = #{param.ip, jdbcType=VARCHAR}
+		</if>
+		<if test="param.user_id != null" >
+			and mo.user_id = #{param.user_id, jdbcType=VARCHAR}
+		</if>
+		<if test="param.rule_id != null" >
+			and mo.rule_id = #{param.rule_id, jdbcType=NUMERIC}
+		</if>
+		<if test="param.level != null" >
+			and mo.level = #{param.level, jdbcType=NUMERIC}
+		</if>
+		<if test="param.updatetime != null" >
+			and mo.updatetime = #{param.updatetime, jdbcType=TIMESTAMP}
+		</if>
+		<if test="param.orderByClause != null" >
+			<![CDATA[ order by mo.${param.orderByClause} desc ]]>
+		</if>
+		<if test="param.countNum != null" >
+			limit #{param.beginNum,jdbcType=NUMERIC},#{param.countNum,jdbcType=NUMERIC}
+		</if>
+	</select>
+
+	<select id="queryOutputList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select mu.phone, mu.email, mo.*
+		from ts_monitor_output mo left join ts_monitor_user mu on mo.user_id = mu.name
+		where
+			mo.status = #{param.status, jdbcType=VARCHAR}
+		<if test="param.id != null" >
+			and mo.id = #{param.id, jdbcType=NUMERIC}
+		</if>
+		<if test="param.ip != null" >
+			and mo.ip = #{param.ip, jdbcType=VARCHAR}
+		</if>
+		<if test="param.user_id != null" >
+			and mo.user_id = #{param.user_id, jdbcType=VARCHAR}
+		</if>
+		<if test="param.rule_id != null" >
+			and mo.rule_id = #{param.rule_id, jdbcType=NUMERIC}
+		</if>
+		<if test="param.level != null" >
+			and mo.level = #{param.level, jdbcType=NUMERIC}
+		</if>
+		<if test="param.updatetime != null" >
+			and mo.updatetime = #{param.updatetime, jdbcType=TIMESTAMP}
+		</if>
+		<if test="param.orderByClause != null" >
+			<![CDATA[ order by mo.${param.orderByClause} desc ]]>
+		</if>
+	</select>
+
+	<update id="update" parameterType="java.util.HashMap" >
+		update ts_monitor_output set
+		status = #{param.status,jdbcType=VARCHAR}
+		,updatetime = #{param.updatetime,jdbcType=TIMESTAMP}
+		where
+		id in <![CDATA[ ( ${param.ids} ) desc ]]>
+	</update>
+
+</mapper>

@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.asiainfo.iot.mapper.MonitorMapper" >
+
+	<select id="queryMonitotListPN" resultType="Integer" parameterType="java.util.HashMap">
+		select count(id) from ts_monitor_output
+		where
+			status in <![CDATA[ (${param.status}) ]]>
+		<if test="param.id != null" >
+			and id = #{param.id, jdbcType=NUMERIC}
+		</if>
+		<if test="param.ip != null" >
+			and ip = #{param.ip, jdbcType=VARCHAR}
+		</if>
+		<if test="param.user_id != null" >
+			and user_id = #{param.user_id, jdbcType=VARCHAR}
+		</if>
+		<if test="param.rule_id != null" >
+			and rule_id = #{param.rule_id, jdbcType=VARCHAR}
+		</if>
+		<if test="param.level != null" >
+			and level = #{param.level, jdbcType=NUMERIC}
+		</if>
+	</select>
+	<select id="queryMonitotList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select
+			DATE_FORMAT(mo.createtime,'%Y-%m-%d %H:%i:%s') createtime_desc,(CASE mr.level WHEN 1 THEN '高'  WHEN 2 THEN '中' ELSE '低' END) leveldesc,
+			mu.phone, mu.email, mo.*, mr.type rule_type,mr.content,mr.is_output,mr.level rule_level
+		from
+			ts_monitor_output mo
+			left join ts_monitor_user mu on mo.user_id = mu.name
+			left join ts_monitor_rule mr on mo.rule_id = mr.id
+		where
+			mo.status in <![CDATA[ (${param.status}) ]]>
+		<if test="param.id != null" >
+			and mo.id = #{param.id, jdbcType=NUMERIC}
+		</if>
+		<if test="param.ip != null" >
+			and mo.ip = #{param.ip, jdbcType=VARCHAR}
+		</if>
+		<if test="param.user_id != null" >
+			and mo.user_id = #{param.user_id, jdbcType=VARCHAR}
+		</if>
+		<if test="param.rule_id != null" >
+			and mo.rule_id = #{param.rule_id, jdbcType=VARCHAR}
+		</if>
+		<if test="param.level != null" >
+			and mo.level = #{param.level, jdbcType=NUMERIC}
+		</if>
+		<if test="param.updatetime != null" >
+			and mo.updatetime = #{param.updatetime, jdbcType=TIMESTAMP}
+		</if>
+		<if test="param.orderByClause != null" >
+			<![CDATA[ order by mo.${param.orderByClause} desc ]]>
+		</if>
+		<if test="param.countNum != null" >
+			limit #{param.beginNum,jdbcType=NUMERIC},#{param.countNum,jdbcType=NUMERIC}
+		</if>
+	</select>
+
+	<select id="queryOutputList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select
+			DATE_FORMAT(mo.createtime,'%Y-%m-%d %H:%i:%s') createtime_desc,(CASE mr.level WHEN 1 THEN '高'  WHEN 2 THEN '中' ELSE '低' END) leveldesc,
+			mu.phone, mu.email, mo.*, mr.type rule_type,mr.content,mr.is_output,mr.level rule_level
+		from
+			ts_monitor_output mo
+		left join ts_monitor_user mu on mo.user_id = mu.name
+		left join ts_monitor_rule mr on mo.rule_id = mr.id
+		where
+			mo.status in <![CDATA[ (${param.status}) ]]>
+		<if test="param.id != null" >
+			and mo.id = #{param.id, jdbcType=NUMERIC}
+		</if>
+		<if test="param.ip != null" >
+			and mo.ip = #{param.ip, jdbcType=VARCHAR}
+		</if>
+		<if test="param.user_id != null" >
+			and mo.user_id = #{param.user_id, jdbcType=VARCHAR}
+		</if>
+		<if test="param.rule_id != null" >
+			and mo.rule_id = #{param.rule_id, jdbcType=VARCHAR}
+		</if>
+		<if test="param.level != null" >
+			and mo.level = #{param.level, jdbcType=NUMERIC}
+		</if>
+		<if test="param.updatetime != null" >
+			and mo.updatetime = #{param.updatetime, jdbcType=TIMESTAMP}
+		</if>
+		order by
+		<if test="param.orderByClause != null" >
+			<![CDATA[  mo.${param.orderByClause} ]]>
+		</if>
+		<if test="param.orderByClause2 != null" >
+			<![CDATA[ ,mo.${param.orderByClause2}  ]]>
+		</if>
+		desc
+	</select>
+
+	<update id="updateMonitorStatus"  parameterType="java.util.HashMap" >
+		update ts_monitor_output
+		<set >
+			<if test="param.status != null" >
+				status = #{param.status,jdbcType=VARCHAR}
+			</if>
+			<if test="param.confirmtime != null" >
+				,confirmtime = #{param.confirmtime, jdbcType=TIMESTAMP}
+			</if>
+		</set>
+		where
+			id in <![CDATA[ ( ${param.ids} ) ]]>
+	</update>
+
+
+	<insert id="insertSelective" parameterType="java.util.HashMap">
+		insert into ts_monitor_output
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="param.ip != null" >
+				ip,
+			</if>
+			<if test="param.user_id != null" >
+				user_id,
+			</if>
+			<if test="param.rule_id != null" >
+				rule_id,
+			</if>
+			<if test="param.output != null" >
+				output,
+			</if>
+			<if test="param.status != null" >
+				status,
+			</if>
+			<if test="param.level != null" >
+				level,
+			</if>
+			<if test="param.createtime != null" >
+				createtime,
+			</if>
+			<if test="param.cycle_num != null" >
+				cycle_num
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="param.ip != null" >
+				#{param.ip,jdbcType=VARCHAR},
+			</if>
+			<if test="param.user_id != null" >
+				#{param.user_id,jdbcType=VARCHAR},
+			</if>
+			<if test="param.rule_id != null" >
+				#{param.rule_id,jdbcType=VARCHAR},
+			</if>
+			<if test="param.output != null" >
+				#{param.output,jdbcType=VARCHAR},
+			</if>
+			<if test="param.status != null" >
+				#{param.status,jdbcType=VARCHAR},
+			</if>
+			<if test="param.level != null" >
+				#{param.level,jdbcType=INTEGER},
+			</if>
+			<if test="param.createtime != null" >
+				#{param.createtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="param.cycle_num != null" >
+				#{param.cycle_num,jdbcType=INTEGER}
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="java.util.HashMap" >
+		update ts_monitor_output set
+		<if test="param.ip != null" >
+			ip = #{param.ip,jdbcType=VARCHAR},
+		</if>
+		<if test="param.user_id != null" >
+			user_id = #{param.user_id,jdbcType=VARCHAR},
+		</if>
+		<if test="param.rule_id != null" >
+			rule_id = #{param.rule_id,jdbcType=VARCHAR},
+		</if>
+		<if test="param.output != null" >
+			output = #{param.output,jdbcType=VARCHAR},
+		</if>
+		<if test="param.status != null" >
+			status = #{param.status,jdbcType=VARCHAR},
+		</if>
+		<if test="param.level != null" >
+			level = #{param.level,jdbcType=INTEGER},
+		</if>
+		<if test="param.cycle_num != null" >
+			cycle_num = #{param.cycle_num,jdbcType=VARCHAR},
+		</if>
+		<if test="param.updatetime != null" >
+			updatetime = #{param.updatetime,jdbcType=TIMESTAMP}
+		</if>
+		where id = #{param.id,jdbcType=INTEGER}
+	</update>
+
+	<delete id="deleteByTime" parameterType="java.util.HashMap" >
+    delete from ts_monitor_output
+    where createtime <![CDATA[ < ]]> #{param.createtime,jdbcType=TIMESTAMP}
+  </delete>
+</mapper>
